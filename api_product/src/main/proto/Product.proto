@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+option java_package = "product";
+option java_multiple_files = true;
+option java_outer_classname = "ProductProto";
+
+package grpcProduct;
+
+service ProductGrpc {
+    rpc createProduct(AddProduct) returns (Product);
+    rpc findProduct(ProductId) returns (Product);
+    rpc getAllProduct(Empty) returns (ListOfProduct);
+    rpc getByCategory(CategoryId) returns (ListOfProduct);
+    rpc getByPlatform(PlatformId) returns (ListOfProduct);
+}
+
+message ProductId {
+    string id = 1;
+}
+
+
+message Product{
+    string id=1;
+    string name=2;
+    string description=3;
+    string img=4;
+    repeated string category_id=5;
+    repeated string platform_id=6;
+}
+
+message Empty {}
+
+
+message AddProduct {
+    string name = 1;
+    string description = 2;
+    string img = 3;
+    repeated string category_id = 4;
+    repeated string platform_id = 5; 
+}
+
+message SendPlatform {
+    string id = 1;
+    double price = 2;
+}
+
+
+message CategoryId {
+    string id = 1;
+}
+
+message PlatformId {
+    string id = 1;
+}
+
+message ListOfProduct{
+    repeated Product products = 1;
+}

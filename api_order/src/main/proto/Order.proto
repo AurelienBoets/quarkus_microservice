@@ -1,0 +1,60 @@
+syntax="proto3";
+
+option java_multiple_files = true;
+option java_package = "order";
+option java_outer_classname = "OrderProto";
+
+package grpcOrder;
+
+service OrderGrpc{
+    rpc getOrder(OrderId) returns(Order);
+    rpc createOrder(AddOrder) returns(Order);
+    rpc createPayment(Payment) returns(URL);
+    rpc getAllOrder(UserId) returns(ListOfOrder);
+}
+
+
+message OrderItem {
+  string productId = 1;
+  string productName = 2;
+  double unitPrice = 3;
+  string platformId = 4;
+  string platformName = 5;
+}
+
+message URL{
+  string url=1;
+}
+
+message OrderId{
+    string id=1;
+}
+
+message Order {
+  string id = 1;
+  int64 id_user=2;
+  string orderDate = 3;
+  double totalAmount = 4; 
+  repeated OrderItem items = 5;
+}
+
+message Payment{
+    int64 id_user=1;
+    double totalAmount=2;
+    repeated OrderItem order_items=3;
+}
+
+message AddOrder{
+    int64 id_user=1;
+    double totalAmount=2;
+    repeated OrderItem order_items=3;
+    string stripe_session=4;
+}
+
+message ListOfOrder{
+    repeated Order orders=1;
+}
+message UserId{
+  int64 id=1;
+}
+

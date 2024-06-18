@@ -1,0 +1,22 @@
+syntax="proto3";
+
+option java_package = "price";
+option java_multiple_files = true;
+option java_outer_classname = "PriceProto";
+
+
+service PriceGrpc {
+    rpc getPrice(PriceRequest) returns (Price);
+    rpc addPrice(Price) returns (Price);
+}
+
+message PriceRequest {
+    string productId = 1;
+    string platformId = 2;
+}
+
+message Price {
+    string productId = 1;
+    string platformId = 2;
+    double price = 3;
+}

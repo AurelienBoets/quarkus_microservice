@@ -1,0 +1,23 @@
+FROM --platform=linux/amd64 quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-17 AS build
+WORKDIR /build
+COPY --chown=quarkus:quarkus .mvn /build/.mvn
+COPY --chown=quarkus:quarkus mvnw /build/mvnw
+COPY --chown=quarkus:quarkus pom.xml /build/
+USER quarkus
+RUN ./mvnw -B org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline
+COPY --chown=quarkus:quarkus ./src /build/src
+
+RUN ./mvnw package -DskipTests -Dnative -Dquarkus.profile=dev
+
+
+#Stage 2 => run
+FROM quay.io/quarkus/quarkus-micro-image:2.0
+WORKDIR /work/
+COPY --from=build /build/target/*-runner /work/application
+RUN chmod 755 /work /work/application && chown -R 1001:root /work && chmod -R "g+rwX" /work
+
+
+EXPOSE 9002
+USER 1001
+
+ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0"]

@@ -1,0 +1,19 @@
+syntax="proto3";
+
+option java_multiple_files = true;
+option java_package = "payment";
+option java_outer_classname = "PaymentProto";
+
+package grpcPayment;
+
+service PaymentGrpc{
+    rpc createPaymentIntent(PaymentIntent) returns(PaymentResponse);
+}
+
+message PaymentIntent{
+    int64 amount=1;
+}
+
+message PaymentResponse{
+    string key=1;
+}

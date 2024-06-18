@@ -1,0 +1,32 @@
+syntax="proto3";
+
+option java_multiple_files = true;
+option java_package = "platform";
+option java_outer_classname = "PlatformProto";
+
+package grpcPlatform;
+
+service PlatformGrpc{
+    rpc createPlatform(AddPlatform) returns(Platform);
+    rpc getPlatform(PlatformId) returns(Platform);
+    rpc getAllPlatform(Empty) returns(ListOfPlatform);
+}
+
+message AddPlatform{
+    string name=1;
+}
+
+message Platform{
+    string id=1;
+    string name=2;
+}
+
+message Empty{}
+
+message PlatformId{
+    string id=1;
+}
+
+message ListOfPlatform{
+    repeated Platform platforms=1;
+}

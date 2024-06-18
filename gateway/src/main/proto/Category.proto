@@ -1,0 +1,32 @@
+syntax="proto3";
+
+option java_package = "category";
+option java_multiple_files = true;
+option java_outer_classname = "CategoryProto";
+
+package grpcCategory;
+
+service CategoryGrpc{
+    rpc createCategory(AddCategory) returns (Category);
+    rpc getCategory(CategoryId) returns(Category);
+    rpc getAllCategory(Empty) returns(ListOfCategory);
+}
+
+message AddCategory{
+    string name=1;
+}
+
+message Category{
+    string id=1;
+    string name=2;
+}
+
+message CategoryId{
+    string id=1;
+}
+
+message Empty{}
+
+message ListOfCategory{
+    repeated Category categories=1;
+}

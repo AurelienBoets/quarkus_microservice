@@ -1,0 +1,17 @@
+Chose à faire sur project:
+	- Ajout du paiement
+	- Sécurité sur les formulaire (regex formik)
+	- Sécurité sur les routes POST et PUT (regex)
+	- Recherche
+	- Améliorer Home Page (Filtre, Promo ?)
+	- DashBoard qui affiche résumé des ventes
+	- Gestion des quantité
+	- Envoie de mail (Mot de passe oublié par la suite)
+	- Modification d'un produit
+	- Suppression d'une plateforme
+	- Avis utilisateur
+	- Ajout de données à l'initialisation
+	- Test Unitaire
+	- Load Balancer
+	- Kafka
+	- Redis (Stockage du panier)
