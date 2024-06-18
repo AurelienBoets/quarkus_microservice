@@ -10,7 +10,9 @@ import org.acme.utils.mapper.ProductMapper;
 
 import aggregate.AggregateGrpc;
 import aggregate.Empty;
+import aggregate.Keyword;
 import aggregate.ListOfProduct;
+import aggregate.ListOfSearchProduct;
 import aggregate.Product;
 import aggregate.ProductId;
 import aggregate.ProductRequest;
@@ -27,7 +29,6 @@ import platform.PlatformGrpc;
 import platform.PlatformId;
 import price.Price;
 import price.PriceGrpc;
-import price.PriceRequest;
 import product.AddProduct;
 import product.ProductGrpc;
 
@@ -77,7 +78,7 @@ public class AggregateGrpcService implements AggregateGrpc {
 
         return productGrpc.findProduct(product.ProductId.newBuilder().setId(request.getId()).build()).onItem()
                 .transformToUni(p -> {
-                    return buildProduct(p);
+                    return productMapper.buildProduct(p);
                 });
     }
 
@@ -86,7 +87,7 @@ public class AggregateGrpcService implements AggregateGrpc {
 
         return productGrpc.getAllProduct(null).onItem().transformToUni(productList -> {
             List<Uni<Product>> productUnis = productList.getProductsList().stream().map(p -> {
-                return buildProduct(p);
+                return productMapper.buildProduct(p);
             }).collect(Collectors.toList());
 
             CompletableFuture<List<Product>> productFuture = process.convertProductToFuture(productUnis);
@@ -98,34 +99,7 @@ public class AggregateGrpcService implements AggregateGrpc {
 
     }
 
-    private Uni<Product> buildProduct(product.Product p) {
-        List<Uni<Category>> categoryUnis = p.getCategoryIdList().stream()
-            .map(categoryId -> categoryGrpc.getCategory(CategoryId.newBuilder().setId(categoryId).build()))
-            .collect(Collectors.toList());
 
-        List<Uni<Price>> priceUnis = p.getPlatformIdList().stream()
-            .map(platformId -> priceGrpc.getPrice(PriceRequest.newBuilder()
-                .setPlatformId(platformId)
-                .setProductId(p.getId())
-                .build()))
-            .collect(Collectors.toList());
-
-        List<Uni<Platform>> platformUnis = p.getPlatformIdList().stream()
-            .map(platformId -> platformGrpc.getPlatform(PlatformId.newBuilder().setId(platformId).build()))
-            .collect(Collectors.toList());
-
-        CompletableFuture<List<Price>> priceFuture = process.convertPriceToFuture(priceUnis);
-        CompletableFuture<List<Category>> categoryFuture = process.convertCategoryToFuture(categoryUnis);
-        CompletableFuture<List<Platform>> platformFuture = process.convertPlatformToFuture(platformUnis);
-
-        Uni<Product> aggregateResponse = Uni.combine().all().unis(
-            Uni.createFrom().completionStage(priceFuture),
-            Uni.createFrom().completionStage(categoryFuture),
-            Uni.createFrom().completionStage(platformFuture)
-        ).asTuple().onItem().transform(tuple -> productMapper.buildProduct(p, tuple.getItem2(), tuple.getItem3(), tuple.getItem1()));
-
-        return aggregateResponse;
-    }
 
         private Uni<Product> buildProductOnCreate(product.Product p,ProductRequest request) {
         List<Uni<Category>> categoryUnis = p.getCategoryIdList().stream()
@@ -157,4 +131,20 @@ public class AggregateGrpcService implements AggregateGrpc {
         ).asTuple().onItem().transform(tuple -> productMapper.buildProduct(p, tuple.getItem2(), tuple.getItem3(), tuple.getItem1()));
         return aggregateResponse;
     }
+
+        @Override
+        public Uni<ListOfSearchProduct> searchProduct(Keyword request) {
+            return productGrpc.searchProduct(product.Keyword.newBuilder().setKeyword(request.getKeyword()).setPage(request.getPage()).build()).onItem().transformToUni(productList -> {
+                List<Uni<Product>> productUnis = productList.getProductsList().stream().map(p -> {
+                    return productMapper.buildProduct(p);
+                }).collect(Collectors.toList());
+
+                CompletableFuture<List<Product>> productFuture = process.convertProductToFuture(productUnis);
+
+                Uni<ListOfSearchProduct> listOfProduct = Uni.createFrom().completionStage(productFuture).onItem()
+                    .transform(list -> productMapper.buildSearchList(list,productList.getPageCount())
+                    );
+                return listOfProduct;
+            });
+        }
 }

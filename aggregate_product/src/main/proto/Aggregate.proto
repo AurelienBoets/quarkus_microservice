@@ -10,6 +10,7 @@ service AggregateGrpc{
     rpc createProduct(ProductRequest) returns (Product);
     rpc findProduct(ProductId) returns (Product);
     rpc getAllProduct(Empty) returns (ListOfProduct);
+    rpc searchProduct(Keyword) returns (ListOfSearchProduct);
 }
 
 message ProductId {
@@ -59,4 +60,14 @@ message PlatformId{
 
 message ListOfProduct {
     repeated Product products = 1;
+}
+
+message Keyword{
+    string keyword=1;
+    int32 page=2;
+}
+
+message ListOfSearchProduct {
+    repeated Product products = 1;
+    int64 pageCount=2;
 }

@@ -6,7 +6,9 @@ import io.smallrye.mutiny.Uni;
 import product.AddProduct;
 import product.CategoryId;
 import product.Empty;
+import product.Keyword;
 import product.ListOfProduct;
+import product.ListOfSearchProduct;
 import product.PlatformId;
 import product.Product;
 import product.ProductGrpc;
@@ -41,5 +43,10 @@ public class ProductGrpcService implements ProductGrpc{
     @Override
     public Uni<ListOfProduct> getByPlatform(PlatformId request) {
         return productGrpc.getByPlatform(request);
+    }
+
+    @Override
+    public Uni<ListOfSearchProduct> searchProduct(Keyword request) {
+        return productGrpc.searchProduct(request);
     }
 }

@@ -9,12 +9,15 @@ import org.bson.types.ObjectId;
 
 
 import io.quarkus.grpc.GrpcService;
+import io.quarkus.panache.common.Page;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import product.AddProduct;
 import product.CategoryId;
 import product.Empty;
+import product.Keyword;
 import product.ListOfProduct;
+import product.ListOfSearchProduct;
 import product.PlatformId;
 import product.Product;
 import product.ProductGrpc;
@@ -109,5 +112,43 @@ public class ProductGrpcService implements ProductGrpc {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getByPlatform'");
     }
+
+    @Override
+    public Uni<ListOfSearchProduct> searchProduct(Keyword request) {
+        String regex = ".*" + request.getKeyword() + ".*";
+        int pageSize = 20;
+
+        Uni<List<ProductEntity>> productListUni = ProductEntity.find("{name:{'$regex':?1,'$options':'i'}}", regex)
+                .page(Page.of(request.getPage(), pageSize))
+                .list();
+
+        Uni<Long> totalItemsUni = ProductEntity.find("{name:{'$regex':?1,'$options':'i'}}", regex).count();
+
+        return Uni.combine().all().unis(productListUni, totalItemsUni).asTuple()
+                .onItem().transform(tuple -> {
+                    List<ProductEntity> productList = tuple.getItem1();
+                    long totalItems = tuple.getItem2();
+                    long totalPages = (totalItems + pageSize - 1) / pageSize; 
+
+                    List<Product> products = productList.stream().map(entity -> {
+                        String img = uploadImg.getImg(entity.getImg());
+                        return Product.newBuilder()
+                                .setId(entity.getId().toString())
+                                .setName(entity.getName())
+                                .setDescription(entity.getDescription())
+                                .setImg(img)
+                                .setFormatImg(entity.getFormatImg())
+                                .addAllCategoryId(entity.getCategoryId())
+                                .addAllPlatformId(entity.getPlatformId())
+                                .build();
+                    }).toList();
+
+                    return ListOfSearchProduct.newBuilder()
+                            .addAllProducts(products)
+                            .setPageCount(totalPages)
+                            .build();
+                });
+    }
+
     
 }
