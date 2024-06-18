@@ -28,7 +28,6 @@ const ProductView = () => {
       id: product.id,
       platforms: [{ id: platform.id }],
     };
-
     setIsInCart(cart.isAlreadyInCart(selectedProduct));
   };
 
@@ -69,68 +68,74 @@ const ProductView = () => {
   return (
     <div className="container mx-auto p-4">
       <ToastContainer />
-      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden flex justify-between mt-4">
-        <div className="relative w-1/2 p-6 bg-gray-100">
-          <img
-            src={`data:image/webp;base64, ${product.img}`}
-            alt={product.name}
-            className="w-full h-auto object-cover"
-          />
-          <div className="absolute bottom-4 left-5 bg-blue-500 bg-opacity-75 text-white rounded-lg px-4 py-2">
-            <span className="text-xl font-semibold">{price}€</span>
-          </div>
-        </div>
-        <div className="p-6 w-1/2 bg-gray-100">
-          <h1 className="text-3xl font-semibold text-gray-800 mb-4">
-            {product.name}
-          </h1>
-          <div>
-            <h2 className="text-lg font-semibold mb-2 text-gray-600">
-              Categories:
-            </h2>
-            <div className="flex flex-wrap">
-              {product.categories.map((category, index) => (
-                <span
-                  key={index}
-                  className="mr-2 mb-2 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-                >
-                  {category.name}
-                </span>
-              ))}
+      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+          <div className="relative w-full h-80 md:h-auto">
+            <img
+              src={`data:${product.formatImg};base64, ${product.img}`}
+              alt={product.name}
+              className="w-full h-full object-cover rounded-lg"
+            />
+            <div className="absolute bottom-4 left-4 md:bottom-2 md:left-2 bg-blue-500 bg-opacity-75 text-white rounded-lg px-4 py-2">
+              <span className="text-lg md:text-xl font-semibold">{price}€</span>
             </div>
           </div>
           <div>
-            <h2 className="text-lg font-semibold mt-4 mb-2 text-gray-600">
-              Platforms:
-            </h2>
-            {product.platforms.map((platform, index) => (
-              <div
-                key={index}
-                className={`mb-2 cursor-pointer px-2 py-1 rounded-full text-sm mr-2 ${
-                  selectedPlatform.id === platform.id
-                    ? "bg-gray-500 text-white"
-                    : "bg-gray-300 text-gray-800"
-                }`}
-                onClick={() => handlePrice(platform)}
-              >
-                {platform.name}
+            <h1 className="text-3xl font-semibold text-gray-800 mb-4">
+              {product.name}
+            </h1>
+            <div className="mb-4">
+              <h2 className="text-lg font-semibold mb-1 text-gray-600">
+                Catégories:
+              </h2>
+              <div className="flex flex-wrap">
+                {product.categories.map((category, index) => (
+                  <span
+                    key={index}
+                    className="mr-2 mb-2 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                  >
+                    {category.name}
+                  </span>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="mb-4">
+              <h2 className="text-lg font-semibold mb-1 text-gray-600">
+                Plateformes:
+              </h2>
+              <div className="flex flex-wrap">
+                {product.platforms.map((platform, index) => (
+                  <div
+                    key={index}
+                    className={`mb-2 cursor-pointer px-2 py-1 rounded-full text-sm ${
+                      selectedPlatform.id === platform.id
+                        ? "bg-gray-500 text-white"
+                        : "bg-gray-300 text-gray-800"
+                    }`}
+                    onClick={() => handlePrice(platform)}
+                  >
+                    {platform.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold mb-1 text-gray-600">
+                Description:
+              </h2>
+              <p className="text-gray-700">{product.description}</p>
+            </div>
+            <button
+              className={`${
+                isInCart
+                  ? "bg-red-500 hover:bg-red-700"
+                  : "bg-blue-500 hover:bg-blue-700"
+              } text-white font-bold py-2 px-4 rounded mt-4 w-full md:w-auto`}
+              onClick={() => addToCart(product)}
+            >
+              {isInCart ? "Retirer du panier" : "Ajouter au panier"}
+            </button>
           </div>
-          <span className="text-lg font-semibold mt-4 mb-2 text-gray-600">
-            Description:
-          </span>
-          <p className="text-gray-700 mt-4">{product.description}</p>
-          <button
-            className={`${
-              isInCart
-                ? "bg-red-500 hover:bg-red-700"
-                : "bg-blue-500 hover:bg-blue-700"
-            } text-white font-bold py-2 px-4 rounded mt-4`}
-            onClick={() => addToCart(product)}
-          >
-            {isInCart ? "Retirer du panier" : "Ajouter au panier"}
-          </button>
         </div>
       </div>
     </div>
