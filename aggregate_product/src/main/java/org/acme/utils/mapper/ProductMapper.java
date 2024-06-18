@@ -21,6 +21,7 @@ public class ProductMapper {
                 .setName(product.getName())
                 .setDescription(product.getDescription())
                 .setImg(product.getImg())
+                .setFormatImg(product.getFormatImg())
                 .addAllCategories(convertCategory(category))
                 .addAllPlatforms(convertPlatform(platform, price))
                 .build();

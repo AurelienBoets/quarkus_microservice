@@ -37,6 +37,7 @@ public class ProductGrpcService implements ProductGrpc {
             .name(request.getName())
             .description(request.getDescription())
             .img(fileName)
+            .formatImg(request.getFormatImg())
             .categoryId(request.getCategoryIdList())
             .platformId(request.getPlatformIdList())
             .build();
@@ -46,6 +47,7 @@ public class ProductGrpcService implements ProductGrpc {
                               .setName(entity.getName())
                               .setDescription(entity.getDescription())
                               .setImg(request.getImg())
+                              .setFormatImg(request.getFormatImg())
                               .addAllCategoryId(entity.getCategoryId())
                               .addAllPlatformId(entity.getPlatformId())
                               .build();
@@ -65,6 +67,7 @@ public class ProductGrpcService implements ProductGrpc {
                           .setName(entity.getName())
                           .setDescription(entity.getDescription())
                           .setImg(img)
+                          .setFormatImg(entity.getFormatImg())
                           .addAllCategoryId(entity.getCategoryId())
                           .addAllPlatformId(entity.getPlatformId())
                           .build();  
@@ -86,6 +89,7 @@ public class ProductGrpcService implements ProductGrpc {
                           .setName(entity.getName())
                           .setDescription(entity.getDescription())
                           .setImg(img)
+                          .setFormatImg(entity.getFormatImg())
                           .addAllCategoryId(entity.getCategoryId())
                           .addAllPlatformId(entity.getPlatformId())
                           .build(); 

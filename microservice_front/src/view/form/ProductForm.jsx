@@ -81,6 +81,7 @@ const ProductForm = () => {
         name: name.current.value,
         description: description.current.value,
         img: base64Image,
+        formatImg: img.current.files[0].type,
         category_id: categoryProduct,
         platforms: platformPrice,
       };

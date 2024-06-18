@@ -71,6 +71,7 @@ public class ProductGrpcService {
                             .setName(productDto.getName())
                             .setDescription(productDto.getDescription())
                             .setImg(productDto.getImg())
+                            .setFormatImg(productDto.getFormatImg())
                             .addAllCategoryId(productDto.getCategory_id())
                             .addAllPlatforms(platformDtoToGrpc(productDto.getPlatforms()))
                             .build())
@@ -89,7 +90,7 @@ public class ProductGrpcService {
         for(Category category:product.getCategoriesList()){
             categories.add(new CategoryDto(category.getId(),category.getName()));
         }
-        return new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getImg(), categories,platforms);
+        return new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getImg(),product.getFormtImg(), categories,platforms);
     }
 
     private List<SendPlatform> platformDtoToGrpc(List<SendPlatformDto> platformDto){

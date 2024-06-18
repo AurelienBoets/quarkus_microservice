@@ -19,6 +19,7 @@ public class ProductDto {
     private String name;
     private String description;
     private String img;
+    private String formatImg;
     private List<CategoryDto> categories;
     private List<PlatformProductDto> platforms;
 }

@@ -62,6 +62,7 @@ public class AggregateGrpcService implements AggregateGrpc {
             .setName(request.getName())
             .setDescription(request.getDescription())
             .setImg(request.getImg())
+            .setFormatImg(request.getFormatImg())
             .addAllPlatformId(platformsId)
             .addAllCategoryId(request.getCategoryIdList())
             .build();

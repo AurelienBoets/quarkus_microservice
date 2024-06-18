@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 const CardProduct = (props) => {
   const navigate = useNavigate();
-  const { name, img, price, platform, id } = props;
+  const { name, img, formatImg, price, platform, id } = props;
 
   return (
     <div className="p-4">
@@ -12,7 +12,7 @@ const CardProduct = (props) => {
             navigate(`/product/${id}`);
           }}
           className="cursor-pointer w-full h-48 object-cover transition-transform transform hover:scale-105"
-          src={`data:image/webp;base64, ${img}`}
+          src={`data:${formatImg};base64, ${img}`}
           alt={name}
         />
 

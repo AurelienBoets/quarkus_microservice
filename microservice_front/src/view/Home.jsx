@@ -33,6 +33,7 @@ const Home = () => {
             name={product.name}
             price={product.platforms[0].price}
             img={product.img}
+            formatImg={product.formatImg}
             platform={product.platforms[0].name}
           />
         ))}
