@@ -103,13 +103,11 @@ public class ProductGrpcService implements ProductGrpc {
 
     @Override
     public Uni<ListOfProduct> getByCategory(CategoryId request) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getByCategory'");
     }
 
     @Override
     public Uni<ListOfProduct> getByPlatform(PlatformId request) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getByPlatform'");
     }
 

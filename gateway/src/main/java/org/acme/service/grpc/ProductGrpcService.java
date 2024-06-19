@@ -75,7 +75,7 @@ public class ProductGrpcService {
                             .setName(productDto.getName())
                             .setDescription(productDto.getDescription())
                             .setImg(productDto.getImg())
-                            .setImg(productDto.getFormatImg())
+                            .setFormatImg(productDto.getFormatImg())
                             .addAllCategoryId(productDto.getCategory_id())
                             .addAllPlatforms(mapper.platformDtoToGrpc(productDto.getPlatforms()))
                             .build())
@@ -85,6 +85,7 @@ public class ProductGrpcService {
     }
 
     @GET
+    @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> searchProduct(@QueryParam("q") String keyword,@QueryParam("page") int page){
         return productGrpc.searchProduct(Keyword.newBuilder().setKeyword(keyword).setPage(page).build()).onItem().transform((ListOfSearchProduct p)->{

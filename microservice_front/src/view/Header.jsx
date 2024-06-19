@@ -2,6 +2,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getUserDetails } from "../helper/user-details";
 import Account from "../components/Account/Account";
+import { productApi } from "../api/productApi";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -36,6 +37,19 @@ const Header = () => {
     setMenuOpen(!isMenuOpen);
   };
 
+  const search = (event) => {
+    if (event.key == "Enter" && event.target.value !== "") {
+      productApi
+        .search(event.target.value, 0)
+        .then((resp) => {
+          navigate(`/?q=${event.target.value}`, { state: resp.data });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
+
   return (
     <>
       <div className="bg-gray-800 h-20 w-screen flex items-center justify-between shadow-lg px-6 md:px-10">
@@ -51,6 +65,7 @@ const Header = () => {
               type="text"
               placeholder="Rechercher..."
               className="bg-gray-700 border border-gray-600 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-4 py-2"
+              onKeyDown={(e) => search(e)}
             />
             <i className="fa-solid fa-magnifying-glass absolute inset-y-1/4 left-3 flex items-center text-gray-400"></i>
           </div>

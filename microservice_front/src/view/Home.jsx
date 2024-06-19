@@ -10,10 +10,14 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    productApi.getAll().then((resp) => {
-      setProducts(resp.data);
-    });
-  }, []);
+    if (location.state && location.state.products) {
+      setProducts(location.state.products);
+    } else {
+      productApi.getAll().then((resp) => {
+        setProducts(resp.data);
+      });
+    }
+  }, [location]);
 
   useEffect(() => {
     if (location.state && location.state.toast) {
