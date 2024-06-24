@@ -56,7 +56,7 @@ const ProductForm = () => {
 
   const handleRemovePlatform = (index) => {
     if (platformPrice.length > 1) {
-      const updatedPlatformPrice = platformPrice.filter((_, i) => i !== index);
+      const updatedPlatformPrice = platformPrice.filter((p, i) => i !== index);
       setPlatformPrice(updatedPlatformPrice);
     }
   };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import OrderItem from "../components/order/OrderItem";
 import { orderApi } from "../api/orderApi";
 
@@ -7,7 +7,8 @@ const PaymentSuccess = () => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { stripeId } = useParams();
+  const search = new URLSearchParams(window.location.search);
+  const stripeId = search.get("s  ");
 
   useEffect(() => {
     const tempOrder = JSON.parse(localStorage.getItem("temp"));

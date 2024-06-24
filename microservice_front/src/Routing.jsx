@@ -8,8 +8,8 @@ import RegisterForm from "./view/form/RegisterForm";
 import { getUserDetails } from "./helper/user-details";
 import Admin from "./view/Admin";
 import ProductForm from "./view/form/ProductForm";
-import PaymentSuccess from "./view/PaymentSuccess";
 import OrderHistoric from "./view/OrderHistoric";
+import PaymentSuccess from "./view/PaymentSuccess";
 
 const isNotLogin = () => {
   if (getUserDetails()) {
@@ -74,7 +74,7 @@ const router = createBrowserRouter([
         loader: () => isAdmin(),
       },
       {
-        path: "/success/:stripeId",
+        path: "/success",
         element: <PaymentSuccess />,
         loader: () => isLogin(),
       },

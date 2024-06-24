@@ -91,7 +91,7 @@ public class OrderGrpcService implements OrderGrpc {
     Stripe.apiKey = "sk_test_51LXT08E7l5c5NjS32ioBp2okfcM39LAR2Tz5nj6n1ZIPRVl3FPmp2eReZj1FmSdWPdbptI1glR84jtomC5EWaOn600MLGICwza";
     SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
             .setMode(SessionCreateParams.Mode.PAYMENT)
-            .setSuccessUrl(clientUrl+"/success/{CHECKOUT_SESSION_ID}" )
+            .setSuccessUrl(clientUrl+"/success?s={CHECKOUT_SESSION_ID}" )
             .setCancelUrl(clientUrl + "/failure");
 
     for (OrderItem item : request.getOrderItemsList()) {
