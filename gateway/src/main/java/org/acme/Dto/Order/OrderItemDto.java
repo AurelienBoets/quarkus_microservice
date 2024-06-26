@@ -1,4 +1,4 @@
-package org.acme.Dto.Order;
+package org.acme.dto.order;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.*;
@@ -9,8 +9,8 @@ import lombok.*;
 @Builder
 @RegisterForReflection
 public class OrderItemDto {
-    private String product_id;
-    private String product_name;
+    private String productId;
+    private String productName;
     private double unitPrice;
     private String platformId;
     private String platformName;

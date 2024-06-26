@@ -1,4 +1,4 @@
-package org.acme.Dto.Platform;
+package org.acme.dto.platform;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.*;

@@ -3,10 +3,9 @@ package org.acme.service.grpc;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import org.acme.Dto.Product.CreateProductDto;
-import org.acme.Dto.Product.ProductDto;
-import org.acme.Dto.Product.SearchDto;
+import org.acme.dto.product.CreateProductDto;
+import org.acme.dto.product.ProductDto;
+import org.acme.dto.product.SearchDto;
 import org.acme.mapper.ProductMapper;
 import org.acme.utils.VerifyLogin;
 
@@ -38,11 +37,13 @@ public class ProductGrpcService {
     @GrpcClient
     AggregateGrpc productGrpc;
     
-    @Inject
-    VerifyLogin verifyLogin;
+    private final VerifyLogin verifyLogin;
+    private final ProductMapper mapper;
 
-    @Inject
-    ProductMapper mapper;
+    @Inject public ProductGrpcService( VerifyLogin verifyLogin,ProductMapper mapper){
+        this.verifyLogin=verifyLogin;
+        this.mapper=mapper;
+    }
 
     @GET
     public Uni<Response> getAll(){
@@ -58,9 +59,7 @@ public class ProductGrpcService {
     @GET
     @Path("/{id}")
     public Uni<Response> getById(@PathParam("id") String id){
-        return productGrpc.findProduct(ProductId.newBuilder().setId(id).build()).onItem().transform((Product p)->{
-            return Response.ok(mapper.productGrpcToDto(p)).build();
-        });
+        return productGrpc.findProduct(ProductId.newBuilder().setId(id).build()).onItem().transform((Product p)->Response.ok(mapper.productGrpcToDto(p)).build());
     }
 
     @POST
@@ -68,7 +67,7 @@ public class ProductGrpcService {
     public Uni<Response> createProduct(CreateProductDto productDto,@Context HttpHeaders headers){
         return verifyLogin.isAdmin(headers)
                 .onItem().transformToUni(isAdmin -> {
-                    if (!isAdmin) {
+                    if (Boolean.FALSE.equals(isAdmin)) {
                         return Uni.createFrom().item(Response.status(Response.Status.UNAUTHORIZED).build());
                     }
                     return productGrpc.createProduct(ProductRequest.newBuilder()

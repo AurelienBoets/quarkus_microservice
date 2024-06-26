@@ -2,22 +2,21 @@ package org.acme.entity;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
 import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class OrderEntity extends ReactivePanacheMongoEntity {
-    private ObjectId id;
-    private long id_user;
+    private long idUser;
     private String orderDate;
     private double totalAmount;
     private String stripeSession;

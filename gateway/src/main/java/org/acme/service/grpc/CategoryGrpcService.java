@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.acme.Dto.Category.CategoryDto;
+import org.acme.dto.category.CategoryDto;
 import org.acme.utils.VerifyLogin;
 
 import category.AddCategory;
@@ -26,8 +26,11 @@ public class CategoryGrpcService {
     @GrpcClient
     CategoryGrpc categoryGrpc;
 
-    @Inject
-    VerifyLogin verifyLogin;
+    private final VerifyLogin verifyLogin;
+
+    @Inject public CategoryGrpcService(VerifyLogin verifyLogin){
+        this.verifyLogin=verifyLogin;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,13 +50,11 @@ public class CategoryGrpcService {
     public Uni<Response> createCategory(Map<String, String> request, @Context HttpHeaders headers) {
         return verifyLogin.isAdmin(headers)
                 .onItem().transformToUni(isAdmin -> {
-                    if (!isAdmin) {
+                    if (Boolean.FALSE.equals(isAdmin)) {
                         return Uni.createFrom().item(Response.status(Response.Status.UNAUTHORIZED).build());
                     }
                     return categoryGrpc.createCategory(AddCategory.newBuilder().setName(request.get("name")).build())
-                            .onItem().transform((Category c) -> {
-                                return Response.status(201).entity(categoryGrpcToDto(c)).build();
-                            });
+                            .onItem().transform((Category c) -> Response.status(201).entity(categoryGrpcToDto(c)).build());
                 });
     }
 
@@ -61,9 +62,7 @@ public class CategoryGrpcService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> getById(@PathParam("id") String id){
-        return categoryGrpc.getCategory(CategoryId.newBuilder().setId(id).build()).onItem().transform((Category c)->{
-            return Response.ok(categoryGrpcToDto(c)).build();
-        });
+        return categoryGrpc.getCategory(CategoryId.newBuilder().setId(id).build()).onItem().transform((Category c)->Response.ok(categoryGrpcToDto(c)).build());
     }
 
     

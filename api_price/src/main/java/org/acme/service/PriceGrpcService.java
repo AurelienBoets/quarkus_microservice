@@ -28,13 +28,11 @@ public class PriceGrpcService implements PriceGrpc{
     @Override
     public Uni<Price> addPrice(Price request) {
         PriceEntity entity=new PriceEntity(request.getProductId(), request.getPlatformId(), request.getPrice());
-        return entity.persist().replaceWith(entity).onItem().transform(p->{
-            return Price.newBuilder()
+        return entity.persist().replaceWith(entity).onItem().transform(p->Price.newBuilder()
                         .setPlatformId(p.getPlatformId())
                         .setProductId(p.getProductId())
                         .setPrice(p.getPrice())
-                        .build();
-        });
+                        .build());
     }
     
 }

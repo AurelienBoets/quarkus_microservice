@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -28,7 +29,8 @@ public class UploadImg {
             Files.write(filePath, imgData);
             return fileName;
         } catch (Exception e) {
-            System.out.println("Error uploading image: " + e.getMessage());
+            Logger logger=Logger.getLogger(getClass().getName());
+            logger.warning("Error uploading image: " + e.getMessage());
             return null;
         }
     }
@@ -38,10 +40,10 @@ public class UploadImg {
             Path filePath = Paths.get(uploadDir, fileName);
             File file=new File(filePath.toUri());
             byte[] fileContent = FileUtils.readFileToByteArray(file);
-            String fileData = Base64.getEncoder().encodeToString(fileContent);
-            return fileData;
+            return Base64.getEncoder().encodeToString(fileContent);
         }catch(Exception e){
-            System.out.println(e.getMessage());
+            Logger logger=Logger.getLogger(getClass().getName());
+            logger.warning(e.getMessage());
         }
         return "";
     }

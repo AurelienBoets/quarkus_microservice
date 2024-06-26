@@ -4,29 +4,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.acme.entity.PlatformEntity;
-import org.acme.repository.PlatformRepository;
 import org.bson.types.ObjectId;
 
 import io.quarkus.grpc.GrpcService;
 import io.smallrye.mutiny.Uni;
-import jakarta.inject.Inject;
 import platform.*;
 
 @GrpcService
-public class PlaformGrpcService implements PlatformGrpc{
-
-    @Inject
-    PlatformRepository repository;
-
+public class PlatformGrpcService implements PlatformGrpc{
     @Override
     public Uni<Platform> createPlatform(AddPlatform request) {
         PlatformEntity entity=PlatformEntity.builder().name(request.getName()).build();
-        return entity.persist().replaceWith(entity).onItem().transform(p->{
-            return Platform.newBuilder()
-                            .setId(entity.getId().toString())
+        return entity.persist().replaceWith(entity).onItem().transform(p->Platform.newBuilder()
+                            .setId(entity.id.toString())
                             .setName(entity.getName())
-                            .build();
-        });
+                            .build());
     }
 
     @Override
@@ -34,7 +26,7 @@ public class PlaformGrpcService implements PlatformGrpc{
         return PlatformEntity.findById(new ObjectId(request.getId())).onItem().transform(p->{
             PlatformEntity entity=(PlatformEntity) p;
             return Platform.newBuilder()
-                            .setId(entity.getId().toString())
+                            .setId(entity.id.toString())
                             .setName(entity.getName())
                             .build();
         });
@@ -46,7 +38,7 @@ public class PlaformGrpcService implements PlatformGrpc{
             List<Platform> platforms=list.stream().map(p->{
                 PlatformEntity entity=(PlatformEntity) p;
                 return Platform.newBuilder()
-                            .setId(entity.getId().toString())
+                            .setId(entity.id.toString())
                             .setName(entity.getName())
                             .build();
             }).collect(Collectors.toList());

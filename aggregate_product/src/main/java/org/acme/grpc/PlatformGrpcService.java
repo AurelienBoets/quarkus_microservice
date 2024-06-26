@@ -1,4 +1,4 @@
-package org.acme.service;
+package org.acme.grpc;
 
 import io.quarkus.grpc.GrpcClient;
 import io.quarkus.grpc.GrpcService;

@@ -1,8 +1,8 @@
 package org.acme.service.grpc;
 
 
-import org.acme.Dto.Payment.CreatePaymentDto;
-import org.acme.Dto.Payment.PaymentResponseDto;
+import org.acme.dto.payment.CreatePaymentDto;
+import org.acme.dto.payment.PaymentResponseDto;
 import org.acme.utils.VerifyLogin;
 
 import io.quarkus.grpc.GrpcClient;
@@ -23,8 +23,11 @@ public class PaymentGrpcService {
     @GrpcClient
     PaymentGrpc paymentGrpc;
 
-    @Inject
-    VerifyLogin verifyLogin;
+    private final VerifyLogin verifyLogin;
+
+    @Inject public PaymentGrpcService(VerifyLogin verifyLogin){
+        this.verifyLogin=verifyLogin;
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

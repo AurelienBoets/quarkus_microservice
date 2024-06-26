@@ -22,7 +22,9 @@ const CartView = () => {
             (platform) => platform.id == p.platforms
           );
           tab.push(product);
+          console.log(product);
           totalPrice += product.platforms[0].price;
+          console.log(totalPrice);
         } catch (e) {
           console.log(e);
         }
@@ -95,9 +97,9 @@ const CartView = () => {
               Payer ({total}€)
             </button>
           </div>
-          {products.map((product, index) => (
+          {products.map((product) => (
             <CartProduct
-              key={index}
+              key={product.id + product.platforms[0].name}
               product={product}
               removeInCart={removeInCart}
             />

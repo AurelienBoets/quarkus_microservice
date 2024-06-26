@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.acme.Dto.Platform.PlatformDto;
+import org.acme.dto.platform.PlatformDto;
 import org.acme.utils.VerifyLogin;
 
 import io.quarkus.grpc.GrpcClient;
@@ -30,9 +30,11 @@ public class PlatformGrpcService {
     @GrpcClient
     PlatformGrpc platformGrpc;
 
+    private final VerifyLogin verifyLogin;
 
-    @Inject
-    VerifyLogin verifyLogin;
+    @Inject public PlatformGrpcService(VerifyLogin verifyLogin){
+        this.verifyLogin=verifyLogin;
+    }
 
     @GET
     public Uni<Response> getAll(){
@@ -50,22 +52,18 @@ public class PlatformGrpcService {
     public Uni<Response> createCategory(Map<String,String> request,@Context HttpHeaders headers){
         return verifyLogin.isAdmin(headers)
                 .onItem().transformToUni(isAdmin -> {
-                    if (!isAdmin) {
+                    if (Boolean.FALSE.equals(isAdmin)) {
                         return Uni.createFrom().item(Response.status(Response.Status.UNAUTHORIZED).build());
                     }
                 return platformGrpc.createPlatform(AddPlatform.newBuilder().setName(request.get("name")).build())
-                .onItem().transform((Platform p)->{
-                    return Response.ok(platformGrpcToDto(p)).build();
-                });
+                .onItem().transform((Platform p)->Response.ok(platformGrpcToDto(p)).build());
             });
         }
         
     @Path("/{id}")
     @GET
     public Uni<Response> getById(@PathParam("id") String id){
-        return platformGrpc.getPlatform(PlatformId.newBuilder().setId(id).build()).onItem().transform((Platform p)->{
-            return Response.ok(platformGrpcToDto(p)).build();
-        });
+        return platformGrpc.getPlatform(PlatformId.newBuilder().setId(id).build()).onItem().transform((Platform p)->Response.ok(platformGrpcToDto(p)).build());
     }
 
     private PlatformDto platformGrpcToDto(Platform platform){

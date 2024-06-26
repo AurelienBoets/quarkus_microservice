@@ -1,8 +1,8 @@
-package org.acme.Dto.Product;
+package org.acme.dto.product;
 
 import java.util.List;
 
-import org.acme.Dto.Platform.SendPlatformDto;
+import org.acme.dto.platform.SendPlatformDto;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.*;

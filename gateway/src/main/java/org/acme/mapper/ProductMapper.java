@@ -3,10 +3,10 @@ package org.acme.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.acme.Dto.Category.CategoryDto;
-import org.acme.Dto.Platform.PlatformProductDto;
-import org.acme.Dto.Platform.SendPlatformDto;
-import org.acme.Dto.Product.ProductDto;
+import org.acme.dto.category.CategoryDto;
+import org.acme.dto.platform.PlatformProductDto;
+import org.acme.dto.platform.SendPlatformDto;
+import org.acme.dto.product.ProductDto;
 
 import aggregate.Category;
 import aggregate.Platform;

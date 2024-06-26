@@ -1,4 +1,4 @@
-package org.acme.Dto.Payment;
+package org.acme.dto.payment;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.AllArgsConstructor;

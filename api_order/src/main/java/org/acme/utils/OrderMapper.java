@@ -11,14 +11,18 @@ import order.Order;
 
 @ApplicationScoped
 public class OrderMapper {
-    @Inject
-    OrderItemMapper itemMapper;
+    
+    private final OrderItemMapper itemMapper;
+
+    @Inject public OrderMapper(OrderItemMapper itemMapper){
+        this.itemMapper=itemMapper;
+    }
 
     public Order entityToOrder(OrderEntity entity){
         return Order.newBuilder()
-                    .setId(entity.getId().toString())
+                    .setId(entity.id.toString())
                     .setTotalAmount(entity.getTotalAmount())
-                    .setIdUser(entity.getId_user())
+                    .setIdUser(entity.getIdUser())
                     .setOrderDate(entity.getOrderDate())
                     .addAllItems(itemMapper.entityToOrderItems(entity.getItems()))
                     .build();
@@ -26,7 +30,7 @@ public class OrderMapper {
 
     public OrderEntity requestToEntity(AddOrder request){
         return OrderEntity.builder()
-                          .id_user(request.getIdUser())
+                          .idUser(request.getIdUser())
                           .stripeSession(request.getStripeSession())
                           .orderDate(LocalDate.now().toString())
                           .totalAmount(request.getTotalAmount())

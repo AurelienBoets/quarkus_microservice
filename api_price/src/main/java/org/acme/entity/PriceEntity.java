@@ -1,16 +1,15 @@
 package org.acme.entity;
 
 import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 public class PriceEntity extends ReactivePanacheMongoEntity {
     private String productId;
     private String platformId;

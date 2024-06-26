@@ -1,4 +1,4 @@
-package org.acme.Dto.Product;
+package org.acme.dto.product;
 
 import java.util.List;
 

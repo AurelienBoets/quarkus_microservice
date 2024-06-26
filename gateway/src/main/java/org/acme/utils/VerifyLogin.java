@@ -1,6 +1,6 @@
 package org.acme.utils;
 
-import org.acme.Dto.LoginResponseDto;
+import org.acme.dto.LoginResponseDto;
 import org.acme.service.IdentityService;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 

@@ -1,4 +1,4 @@
-package org.acme.Dto.Order;
+package org.acme.dto.order;
 
 import java.util.List;
 

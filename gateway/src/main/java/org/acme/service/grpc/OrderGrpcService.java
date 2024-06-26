@@ -3,9 +3,9 @@ package org.acme.service.grpc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.acme.Dto.Order.CreateOrderDto;
-import org.acme.Dto.Order.OrderDto;
-import org.acme.Dto.Order.OrderItemDto;
+import org.acme.dto.order.CreateOrderDto;
+import org.acme.dto.order.OrderDto;
+import org.acme.dto.order.OrderItemDto;
 import org.acme.utils.VerifyLogin;
 
 import io.quarkus.grpc.GrpcClient;
@@ -33,8 +33,11 @@ public class OrderGrpcService {
     @GrpcClient
     OrderGrpc orderGrpc;
 
-    @Inject
-    VerifyLogin verifyLogin;
+    private final VerifyLogin verifyLogin;
+
+    @Inject public OrderGrpcService(VerifyLogin verifyLogin){
+        this.verifyLogin=verifyLogin;
+    }
 
     @GET
     public Uni<Response> getAll(@Context HttpHeaders headers) {
@@ -98,9 +101,7 @@ public class OrderGrpcService {
                 if (userId == null) {
                     return Uni.createFrom().item(Response.status(Response.Status.UNAUTHORIZED).build());
                 }
-                return orderGrpc.getOrder(OrderId.newBuilder().setId(id).build()).onItem().transform(order -> {
-                    return Response.ok(orderGrpcToDto(order)).build();
-                });
+                return orderGrpc.getOrder(OrderId.newBuilder().setId(id).build()).onItem().transform(order -> Response.ok(orderGrpcToDto(order)).build());
             });
     }
 
@@ -116,8 +117,8 @@ public class OrderGrpcService {
         List<OrderItem> items = new ArrayList<>();
         for (OrderItemDto itemDto : itemsDto) {
             items.add(OrderItem.newBuilder()
-                    .setProductId(itemDto.getProduct_id())
-                    .setProductName(itemDto.getProduct_name())
+                    .setProductId(itemDto.getProductId())
+                    .setProductName(itemDto.getProductName())
                     .setUnitPrice(itemDto.getUnitPrice())
                     .setPlatformId(itemDto.getPlatformId())
                     .setPlatformName(itemDto.getPlatformName())

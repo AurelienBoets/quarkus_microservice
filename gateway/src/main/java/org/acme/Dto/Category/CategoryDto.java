@@ -1,4 +1,4 @@
-package org.acme.Dto.Category;
+package org.acme.dto.category;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

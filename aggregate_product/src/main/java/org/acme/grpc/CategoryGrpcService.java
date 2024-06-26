@@ -1,4 +1,4 @@
-package org.acme.service;
+package org.acme.grpc;
 
 import category.AddCategory;
 import category.Category;

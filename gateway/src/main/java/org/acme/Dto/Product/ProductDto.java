@@ -1,9 +1,9 @@
-package org.acme.Dto.Product;
+package org.acme.dto.product;
 
 import java.util.List;
 
-import org.acme.Dto.Category.CategoryDto;
-import org.acme.Dto.Platform.PlatformProductDto;
+import org.acme.dto.category.CategoryDto;
+import org.acme.dto.platform.PlatformProductDto;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.*;

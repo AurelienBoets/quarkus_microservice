@@ -2,9 +2,9 @@ package org.acme.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.acme.entity.OrderEntity;
-import org.acme.repository.OrderRepository;
 import org.acme.utils.OrderMapper;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -36,14 +36,14 @@ import order.UserId;
 @RegisterForReflection(targets = {StripeError.class,Session.class,SessionCreateParams.class,Session.class,Stripe.class,Address.class,LineItem.class})
 public class OrderGrpcService implements OrderGrpc {
 
-    @Inject
-    OrderRepository repository;
-
-    @Inject
-    OrderMapper orderMapper;
-
     @ConfigProperty(name = "client.url")
     String clientUrl;
+
+    private final OrderMapper orderMapper;
+
+    @Inject public OrderGrpcService(OrderMapper orderMapper){
+        this.orderMapper=orderMapper;
+    }
 
     @Override
     public Uni<Order> getOrder(OrderId request) {
@@ -53,27 +53,37 @@ public class OrderGrpcService implements OrderGrpc {
         });
     }
 
-    @Override
-    public Uni<Order> createOrder(AddOrder request) {
-        OrderEntity entity = orderMapper.requestToEntity(request);
-        try {
-            Session session=Session.retrieve(request.getStripeSession());
-            if( session.getStatus().equals("complete") && session.getId().equals(request.getStripeSession()))
-            {
-                OrderEntity orderBySession=(OrderEntity) repository.find("stripeSession=?1",request.getStripeSession()).firstResult();
-                System.out.println(orderBySession);
-                if(orderBySession==null){
+@Override
+public Uni<Order> createOrder(AddOrder request) {
+    return Uni.createFrom().item(request.getStripeSession())
+        .onItem().transformToUni(this::retrieveSessionFromStripe)
+        .onItem().transformToUni(session -> checkAndPersistOrder(session, request));
+}
 
-                    return entity.persist().replaceWith(entity).onItem().transform(o -> {
-                        return orderMapper.entityToOrder(entity);
-                    });
-                }
-            }
-        } catch (StripeException e) {
-            e.printStackTrace();
-        }
-        return Uni.createFrom().item(()->null);
+private Uni<Session> retrieveSessionFromStripe(String sessionId) {
+    try {
+        return Uni.createFrom().item(Session.retrieve(sessionId));
+    } catch (StripeException e) {
+        return Uni.createFrom().failure(e);
     }
+}
+
+private Uni<Order> checkAndPersistOrder(Session session, AddOrder request) {
+    if (session.getStatus().equals("complete") && session.getId().equals(request.getStripeSession())) {
+        return OrderEntity.find("stripeSession", request.getStripeSession()).firstResult()
+            .onItem().transformToUni(existingOrder -> {
+                if (existingOrder == null) {
+                    OrderEntity entity = orderMapper.requestToEntity(request);
+                    return entity.persist().replaceWith(entity)
+                        .onItem().transform(orderMapper::entityToOrder);
+                } else {
+                    throw new IllegalStateException("Order already exists for session: " + request.getStripeSession());
+                }
+            });
+    } else {
+        throw new IllegalStateException("Session is not complete or invalid: " + session.getId());
+    }
+}
 
     @Override
     public Uni<ListOfOrder> getAllOrder(UserId request) {
@@ -115,8 +125,9 @@ public class OrderGrpcService implements OrderGrpc {
             Session session = Session.create(paramsBuilder.build());
             return URL.newBuilder().setUrl(session.getUrl()).build();
         } catch (StripeException e) {
-            System.err.println("Failed to create Stripe session: " + e.getMessage());
-            throw new RuntimeException("Failed to create Stripe session", e);
+            Logger logger=Logger.getLogger(getClass().getName());
+            logger.warning("Failed to create Stripe session: " + e.getMessage());
+            return null;
         }
     }).onFailure().recoverWithUni(Uni.createFrom().failure(new RuntimeException("Failed to create Stripe session")));
 }

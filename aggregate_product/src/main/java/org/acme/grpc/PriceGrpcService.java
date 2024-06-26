@@ -1,11 +1,11 @@
-package org.acme.service;
+package org.acme.grpc;
 
 import io.quarkus.grpc.GrpcClient;
 import io.quarkus.grpc.GrpcService;
 import io.smallrye.mutiny.Uni;
 import price.PriceGrpc;
 import price.PriceRequest;
-import price.Price;;
+import price.Price;
 
 @GrpcService
 public class PriceGrpcService implements PriceGrpc {
