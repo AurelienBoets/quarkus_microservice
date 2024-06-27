@@ -3,32 +3,33 @@ package org.acme.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import com.stripe.model.LineItemCollection;
 import jakarta.enterprise.context.ApplicationScoped;
 import order.OrderItem;
 
 @ApplicationScoped
 public class OrderItemMapper {
-    
-    public List<OrderItem> entityToOrderItems(List<org.acme.entity.OrderItem> entityList){
-        List<OrderItem> items=new ArrayList<>();
-        for(org.acme.entity.OrderItem entity:entityList ){
-            items.add(OrderItem.newBuilder()
-                               .setProductName(entity.getProductName())
-                               .setProductId(entity.getProductId())
-                               .setUnitPrice(entity.getUnitPrice())
-                               .setPlatformId(entity.getPlatformId())
-                               .setPlatformName(entity.getPlatformName())
-                               .build());
+
+    public List<OrderItem> entityToOrderItems(List<org.acme.entity.OrderItem> entityList) {
+        List<OrderItem> items = new ArrayList<>();
+        for (org.acme.entity.OrderItem entity : entityList) {
+            items.add(OrderItem.newBuilder().setProductName(entity.getProductName())
+                    .setProductId(entity.getProductId()).setUnitPrice(entity.getUnitPrice())
+                    .setPlatformId(entity.getPlatformId()).setPlatformName(entity.getPlatformName())
+                    .build());
         }
         return items;
-    } 
-
-    public List<org.acme.entity.OrderItem> orderItemsToEntity(List<OrderItem> items){
-        List<org.acme.entity.OrderItem> entityList=new ArrayList<>();
-        for(OrderItem item:items ){
-            entityList.add(new org.acme.entity.OrderItem(item.getProductId(),item.getProductName(),item.getUnitPrice(),item.getPlatformId(),item.getPlatformName()));
-        }
-        return entityList;
     }
+
+    public List<org.acme.entity.OrderItem> lineItemsToOrderItems(LineItemCollection lineItems) {
+        return lineItems.getData().stream().map(item -> {
+            String[] descriptionParts = item.getDescription().split(" sur ");
+            String productName = descriptionParts[0];
+            String platformName = descriptionParts[1];
+            return org.acme.entity.OrderItem.builder().productId(item.getId())
+                    .productName(productName).platformName(platformName)
+                    .unitPrice(item.getPrice().getUnitAmount()).build();
+        }).toList();
+    }
+
 }

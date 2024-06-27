@@ -8,7 +8,7 @@ const PaymentSuccess = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const search = new URLSearchParams(window.location.search);
-  const stripeId = search.get("s  ");
+  const stripeId = search.get("s");
 
   useEffect(() => {
     const tempOrder = JSON.parse(localStorage.getItem("temp"));
@@ -16,11 +16,10 @@ const PaymentSuccess = () => {
     if (tempOrder) {
       setOrderDetails(tempOrder);
       orderApi
-        .create(tempOrder, stripeId)
+        .create(stripeId)
         .then(() => {
           setLoading(false);
           localStorage.removeItem("cart");
-          localStorage.removeItem("temp");
         })
         .catch((e) => {
           console.log(e);

@@ -11,7 +11,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class InitService {
     public InitService(){
         CategoryRepository repository=new CategoryRepository();
-        if(!repository.listAll().isEmpty()){
+        if(repository.listAll().isEmpty()){
             CategoryEntity action=new CategoryEntity("Action"); 
             CategoryEntity adventure=new CategoryEntity("Aventure"); 
             CategoryEntity multi=new CategoryEntity("Multijoueur"); 

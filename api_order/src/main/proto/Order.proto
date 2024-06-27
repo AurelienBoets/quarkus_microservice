@@ -46,9 +46,7 @@ message Payment{
 
 message AddOrder{
     int64 id_user=1;
-    double totalAmount=2;
-    repeated OrderItem order_items=3;
-    string stripe_session=4;
+    string stripe_session=2;
 }
 
 message ListOfOrder{

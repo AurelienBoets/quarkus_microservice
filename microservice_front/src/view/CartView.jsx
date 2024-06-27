@@ -22,9 +22,9 @@ const CartView = () => {
             (platform) => platform.id == p.platforms
           );
           tab.push(product);
-          console.log(product);
-          totalPrice += product.platforms[0].price;
-          console.log(totalPrice);
+          totalPrice = (
+            parseFloat(totalPrice) + parseFloat(product.platforms[0].price)
+          ).toFixed(2);
         } catch (e) {
           console.log(e);
         }
@@ -56,8 +56,8 @@ const CartView = () => {
     let orderItems = [];
     products.forEach((product) => {
       let item = {
-        product_id: product.id,
-        product_name: product.name,
+        productId: product.id,
+        productName: product.name,
         unitPrice: product.platforms[0].price,
         platformId: product.platforms[0].id,
         platformName: product.platforms[0].name,
@@ -70,13 +70,6 @@ const CartView = () => {
         items: orderItems,
       })
       .then((resp) => {
-        localStorage.setItem(
-          "temp",
-          JSON.stringify({
-            totalAmount: total,
-            items: orderItems,
-          })
-        );
         window.location.replace(resp.data);
       })
       .catch((e) => {
