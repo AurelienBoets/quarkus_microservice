@@ -9,8 +9,8 @@ const getById = (id) => {
   return api.get("/order/" + id, { headers: authHeader() });
 };
 
-const create = (value, sessionId) => {
-  return api.post("/order/payment/" + sessionId, value, {
+const create = (sessionId) => {
+  return api.get("/order/payment/" + sessionId, {
     headers: authHeader(),
   });
 };

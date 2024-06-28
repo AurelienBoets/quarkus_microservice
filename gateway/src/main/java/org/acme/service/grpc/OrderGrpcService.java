@@ -57,10 +57,10 @@ public class OrderGrpcService {
         });
     }
 
-    @POST
+    @GET
     @Path("/payment/{sessionId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Uni<Response> createOrder(CreateOrderDto orderDto, @Context HttpHeaders headers,
+    public Uni<Response> createOrder(@Context HttpHeaders headers,
             @PathParam("sessionId") String sessionId) {
         return verifyLogin.isLogin(headers).onItem().transformToUni(userId -> {
             if (userId == null) {

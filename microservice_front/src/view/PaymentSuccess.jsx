@@ -11,23 +11,17 @@ const PaymentSuccess = () => {
   const stripeId = search.get("s");
 
   useEffect(() => {
-    const tempOrder = JSON.parse(localStorage.getItem("temp"));
-
-    if (tempOrder) {
-      setOrderDetails(tempOrder);
-      orderApi
-        .create(stripeId)
-        .then(() => {
-          setLoading(false);
-          localStorage.removeItem("cart");
-        })
-        .catch((e) => {
-          console.log(e);
-          navigate("/");
-        });
-    } else {
-      navigate("/");
-    }
+    orderApi
+      .create(stripeId)
+      .then((resp) => {
+        setLoading(false);
+        localStorage.removeItem("cart");
+        setOrderDetails(resp.data);
+      })
+      .catch((e) => {
+        console.log(e);
+        navigate("/");
+      });
   }, [navigate, stripeId]);
 
   if (loading) {

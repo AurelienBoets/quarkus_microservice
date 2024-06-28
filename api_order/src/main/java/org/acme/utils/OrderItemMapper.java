@@ -27,6 +27,7 @@ public class OrderItemMapper {
             String productName = descriptionParts[0];
             String platformName = descriptionParts[1];
             return org.acme.entity.OrderItem.builder().productId(item.getId())
+                    .platformId(item.getPrice().getMetadata().get("platformID"))
                     .productName(productName).platformName(platformName)
                     .unitPrice(item.getPrice().getUnitAmount()).build();
         }).toList();
