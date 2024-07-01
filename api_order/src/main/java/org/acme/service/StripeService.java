@@ -54,7 +54,8 @@ public class StripeService {
 
     public LineItemCollection retrieveSessionLineItems(String sessionId) throws StripeException {
         Session resource = Session.retrieve(sessionId);
-        SessionListLineItemsParams params = SessionListLineItemsParams.builder().build();
+        SessionListLineItemsParams params =
+                SessionListLineItemsParams.builder().addExpand("data.price.product").build();
         return resource.listLineItems(params);
     }
 

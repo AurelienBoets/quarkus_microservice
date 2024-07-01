@@ -33,8 +33,8 @@ public class OrderMapper {
         for (OrderItem item : items) {
             total += item.getUnitPrice();
         }
-        return OrderEntity.builder().idUser(request.getIdUser())
-                .stripeSession(request.getStripeSession()).orderDate(LocalDate.now().toString())
-                .totalAmount(total).items(items).build();
+        return OrderEntity.builder().idUser(request.getIdUser()).totalAmount(total)
+                .orderDate(LocalDate.now().toString()).stripeSession(request.getStripeSession())
+                .items(items).build();
     }
 }

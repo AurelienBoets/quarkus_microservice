@@ -26,10 +26,11 @@ public class OrderItemMapper {
             String[] descriptionParts = item.getDescription().split(" sur ");
             String productName = descriptionParts[0];
             String platformName = descriptionParts[1];
-            return org.acme.entity.OrderItem.builder().productId(item.getId())
-                    .platformId(item.getPrice().getMetadata().get("platformId"))
+            return org.acme.entity.OrderItem.builder()
+                    .productId(item.getPrice().getProductObject().getMetadata().get("app_id"))
+                    .platformId(item.getPrice().getProductObject().getMetadata().get("platformId"))
                     .productName(productName).platformName(platformName)
-                    .unitPrice(item.getPrice().getUnitAmount()).build();
+                    .unitPrice(item.getPrice().getUnitAmount() / 100d).build();
         }).toList();
     }
 
