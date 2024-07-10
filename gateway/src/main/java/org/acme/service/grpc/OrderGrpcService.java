@@ -97,7 +97,12 @@ public class OrderGrpcService {
                 return Uni.createFrom().item(Response.status(Response.Status.UNAUTHORIZED).build());
             }
             return orderGrpc.getOrder(OrderId.newBuilder().setId(id).build()).onItem()
-                    .transform(order -> Response.ok(orderGrpcToDto(order)).build());
+                    .transform(order -> {
+                        if (order.getIdUser() != userId) {
+                            return Response.status(Response.Status.UNAUTHORIZED).build();
+                        }
+                        return Response.ok(orderGrpcToDto(order)).build();
+                    });
         });
     }
 

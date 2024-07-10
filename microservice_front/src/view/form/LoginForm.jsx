@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { identityApi } from "../../api/identityApi";
 import { ToastContainer, toast } from "react-toastify";
-import { getUserDetails } from "../../helper/user-details";
 
 const LoginForm = () => {
   const email = useRef();

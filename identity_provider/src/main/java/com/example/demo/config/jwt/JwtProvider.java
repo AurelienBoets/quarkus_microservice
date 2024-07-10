@@ -24,10 +24,8 @@ public class JwtProvider {
     private String secret;
 
     private SecretKey getSigninKey() {
-
         byte[] keyBytes = Base64.getDecoder().decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
-
     }
 
     public String generateToken(Authentication authentication) {

@@ -38,7 +38,7 @@ public class OrderService {
     }
 
     public Uni<List<Order>> getAllOrdersByUserId(Long userId) {
-        return OrderEntity.find("id_user = ?1", userId).list().onItem()
+        return OrderEntity.find("idUser = ?1", userId).list().onItem()
                 .transform(list -> list.stream().map(o -> {
                     OrderEntity entity = (OrderEntity) o;
                     return orderMapper.entityToOrder(entity);

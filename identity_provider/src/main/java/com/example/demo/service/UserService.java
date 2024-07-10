@@ -100,7 +100,6 @@ public class UserService implements UserDetailsService {
         }
 }
 
-
     public boolean deleteUser(Long id) {
         User user = getUserById(id);
         if (user != null) {
@@ -108,9 +107,5 @@ public class UserService implements UserDetailsService {
             return true;
         }
         return false;
-    }
-
-    public Optional<User> getUserByEmail(String email) {
-        return repository.findByEmail(email);
     }
 }

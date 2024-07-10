@@ -10,17 +10,22 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.state && location.state.products) {
+    if (location?.state?.products) {
       setProducts(location.state.products);
     } else {
-      productApi.getAll().then((resp) => {
-        setProducts(resp.data);
-      });
+      productApi
+        .getAll()
+        .then((resp) => {
+          setProducts(resp.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     }
   }, [location]);
 
   useEffect(() => {
-    if (location.state && location.state.toast) {
+    if (location?.state?.toast) {
       toast.info(location.state.toast);
       navigate(location.pathname, { replace: true, state: {} });
     }
@@ -35,10 +40,8 @@ const Home = () => {
             key={product.id}
             id={product.id}
             name={product.name}
-            price={product.platforms[0].price}
             img={product.img}
             formatImg={product.formatImg}
-            platform={product.platforms[0].name}
           />
         ))}
       </div>

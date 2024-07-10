@@ -86,7 +86,8 @@ const Header = () => {
                     onClick={() => navigate("/dashboard")}
                     className="cursor-pointer"
                   >
-                    Admin <i className="fa-solid fa-user-shield text-lg"></i>
+                    Dashboard{" "}
+                    <i className="fa-solid fa-user-shield text-lg"></i>
                   </span>
                 )}
                 <button
