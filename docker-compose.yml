@@ -58,7 +58,19 @@ services:
       ME_CONFIG_BASICAUTH: false
     depends_on:
       - mongo
-
+  
+  # message broker
+  rabbit:
+    image: rabbitmq:3.12.14-management
+    container_name: rabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - project
   #Back
   identity:
     container_name: identity
