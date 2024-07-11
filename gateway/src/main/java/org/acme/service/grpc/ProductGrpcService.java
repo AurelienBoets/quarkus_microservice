@@ -13,6 +13,7 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import io.quarkus.grpc.GrpcClient;
 import io.smallrye.mutiny.Uni;
+import io.vertx.core.json.JsonObject;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -46,7 +47,7 @@ public class ProductGrpcService {
 
     @Inject
     @Channel("product-outgoing")
-    Emitter<CreateProductDto> productEmitter;
+    Emitter<JsonObject> productEmitter;
 
     @GET
     public Uni<Response> getAll() {
@@ -99,13 +100,14 @@ public class ProductGrpcService {
                 });
     }
 
+
     public Uni<Response> fallbackCreateProduct(CreateProductDto productDto,
             @Context HttpHeaders headers) {
         return verifyLogin.isAdmin(headers).onItem().transformToUni(isAdmin -> {
             if (Boolean.FALSE.equals(isAdmin)) {
                 return Uni.createFrom().item(Response.status(Response.Status.UNAUTHORIZED).build());
             }
-            productEmitter.send(productDto);
+            productEmitter.send(JsonObject.mapFrom(productDto));
             return Uni.createFrom()
                     .item(Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(
                             "Le service produit est actuellement indisponible. Le produit sera créé dès que possible.")

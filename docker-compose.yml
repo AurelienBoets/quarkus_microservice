@@ -61,7 +61,7 @@ services:
   
   # message broker
   rabbit:
-    image: rabbitmq:3.12.14-management
+    image: rabbitmq:3.13.4-management
     container_name: rabbit
     ports:
       - 5672:5672
@@ -106,6 +106,7 @@ services:
       - PLATFORM_PORT=${PLATFORM_GRPC_PORT}
       - PRICE_HOST=price
       - PRICE_PORT=${PRICE_GRPC_PORT}
+      - RABBIT=rabbit
     networks:
       - project
     build:
@@ -126,6 +127,7 @@ services:
       - ORDER_PORT=${ORDER_GRPC_PORT}
       - PORT=8080
       - AGGREGATE_PORT=${AGGREGATE_GRPC_PORT}
+      - RABBIT=rabbit
     networks:
       - project
     build:
