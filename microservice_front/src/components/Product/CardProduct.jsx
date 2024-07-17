@@ -8,8 +8,7 @@ const CardProduct = (props) => {
     <div className="p-4">
       <div className="max-w-sm shadow-md hover:shadow-lg transition-shadow bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
         <img
-          onClick={() => {}}
-          onKeyDown={() => {
+          onClick={() => {
             navigate(`/product/${id}`);
           }}
           className="cursor-pointer w-full h-48 object-cover transition-transform transform hover:scale-105"

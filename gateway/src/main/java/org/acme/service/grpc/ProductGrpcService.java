@@ -9,6 +9,7 @@ import org.acme.dto.product.SearchDto;
 import org.acme.mapper.ProductMapper;
 import org.acme.utils.VerifyLogin;
 import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import io.quarkus.grpc.GrpcClient;
@@ -70,6 +71,7 @@ public class ProductGrpcService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Fallback(fallbackMethod = "fallbackCreateProduct")
+    @Timeout(value = 5000)
     public Uni<Response> createProduct(CreateProductDto productDto, @Context HttpHeaders headers) {
         return verifyLogin.isAdmin(headers).onItem().transformToUni(isAdmin -> {
             if (Boolean.FALSE.equals(isAdmin)) {
@@ -78,7 +80,7 @@ public class ProductGrpcService {
             return productGrpc.createProduct(ProductRequest.newBuilder()
                     .setName(productDto.getName()).setDescription(productDto.getDescription())
                     .setImg(productDto.getImg()).setFormatImg(productDto.getFormatImg())
-                    .addAllCategoryId(productDto.getCategory_id())
+                    .addAllCategoryId(productDto.getCategoryId())
                     .addAllPlatforms(mapper.platformDtoToGrpc(productDto.getPlatforms())).build())
                     .onItem().transform(p -> Response.ok(mapper.productGrpcToDto(p)).build());
         });

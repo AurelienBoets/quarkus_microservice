@@ -1,9 +1,6 @@
-package org.acme.dto.product;
+package org.acme.dto;
 
 import java.util.List;
-
-import org.acme.dto.platform.SendPlatformDto;
-
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.*;
 
@@ -12,11 +9,13 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @RegisterForReflection
-public class CreateProductDto {
+
+public class ProductMessageDto {
     private String name;
     private String description;
     private String img;
     private String formatImg;
     private List<String> categoryId;
-    private List<SendPlatformDto> platforms;
+    private List<ProductPlatformMessageDto> platforms;
 }
+

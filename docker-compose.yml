@@ -107,6 +107,7 @@ services:
       - PRICE_HOST=price
       - PRICE_PORT=${PRICE_GRPC_PORT}
       - RABBIT=rabbit
+      - HOST=aggregate
     networks:
       - project
     build:
@@ -137,6 +138,7 @@ services:
       - mongo
       - product
       - order
+      - aggregate
   category:
     container_name: category
     ports:
@@ -145,6 +147,7 @@ services:
       - GRPC_PORT=${CATEGORY_GRPC_PORT}
       - HTTP_PORT=9002
       - DATABASE_HOST=mongo
+      - RABBIT=rabbit
     networks:
       - project
     build:
