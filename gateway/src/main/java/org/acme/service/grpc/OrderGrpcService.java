@@ -2,14 +2,16 @@ package org.acme.service.grpc;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.acme.dto.order.CreateOrderDto;
 import org.acme.dto.order.OrderDto;
 import org.acme.dto.order.OrderItemDto;
+import org.acme.dto.payment.CreatePaymentDto;
 import org.acme.utils.VerifyLogin;
-
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import io.quarkus.grpc.GrpcClient;
 import io.smallrye.mutiny.Uni;
+import io.vertx.core.json.JsonObject;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -20,6 +22,8 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 import order.AddOrder;
 import order.Order;
 import order.OrderGrpc;
@@ -33,12 +37,12 @@ public class OrderGrpcService {
     @GrpcClient
     OrderGrpc orderGrpc;
 
-    private final VerifyLogin verifyLogin;
+    @Inject
+    VerifyLogin verifyLogin;
 
     @Inject
-    public OrderGrpcService(VerifyLogin verifyLogin) {
-        this.verifyLogin = verifyLogin;
-    }
+    @Channel("order-outgoing")
+    Emitter<JsonObject> orderEmitter;
 
     @GET
     public Uni<Response> getAll(@Context HttpHeaders headers) {
@@ -60,6 +64,8 @@ public class OrderGrpcService {
     @GET
     @Path("/payment/{sessionId}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Fallback(fallbackMethod = "fallbackCreateOrder")
+    @Timeout(value = 5000)
     public Uni<Response> createOrder(@Context HttpHeaders headers,
             @PathParam("sessionId") String sessionId) {
         return verifyLogin.isLogin(headers).onItem().transformToUni(userId -> {
@@ -76,14 +82,14 @@ public class OrderGrpcService {
     @POST
     @Path("/payment")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Uni<Response> createPayment(CreateOrderDto orderDto, @Context HttpHeaders headers) {
+    public Uni<Response> createPayment(CreatePaymentDto paymentDto, @Context HttpHeaders headers) {
         return verifyLogin.isLogin(headers).onItem().transformToUni(userId -> {
             if (userId == null) {
                 return Uni.createFrom().item(Response.status(Response.Status.UNAUTHORIZED).build());
             }
             return orderGrpc
-                    .createPayment(Payment.newBuilder().setTotalAmount(orderDto.getTotalAmount())
-                            .addAllOrderItems(orderItemDtoToGrpc(orderDto.getItems()))
+                    .createPayment(Payment.newBuilder().setTotalAmount(paymentDto.getTotalAmount())
+                            .addAllOrderItems(orderItemDtoToGrpc(paymentDto.getItems()))
                             .setIdUser(userId).build())
                     .onItem().transform(url -> Response.ok(url.getUrl()).build());
         });
@@ -125,5 +131,22 @@ public class OrderGrpcService {
                     .setPlatformName(itemDto.getPlatformName()).build());
         }
         return items;
+    }
+
+    public Uni<Response> fallbackCreateOrder(@Context HttpHeaders headers,
+            @PathParam("sessionId") String sessionId) {
+        return verifyLogin.isLogin(headers).onItem().transformToUni(userId -> {
+            if (userId == null) {
+                return Uni.createFrom().item(Response.status(Response.Status.UNAUTHORIZED).build());
+            }
+            CreateOrderDto orderDto = new CreateOrderDto(userId, sessionId);
+            System.out.println(orderDto);
+            System.out.println(JsonObject.mapFrom(orderDto));
+            orderEmitter.send(JsonObject.mapFrom(orderDto));
+            return Uni.createFrom()
+                    .item(Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(
+                            "Le service commande est actuellement indisponible. La commande sera créé dès que possible.")
+                            .build());
+        });
     }
 }

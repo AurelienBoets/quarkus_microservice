@@ -33,7 +33,7 @@ public class CategoryGrpcService {
 
     @Inject
     @Channel("category-outgoing")
-    Emitter<JsonObject> productEmitter;
+    Emitter<JsonObject> categoryEmitter;
 
     @Inject
     public CategoryGrpcService(VerifyLogin verifyLogin) {
@@ -87,7 +87,7 @@ public class CategoryGrpcService {
             if (Boolean.FALSE.equals(isAdmin)) {
                 return Uni.createFrom().item(Response.status(Response.Status.UNAUTHORIZED).build());
             }
-            productEmitter.send(JsonObject.mapFrom(request));
+            categoryEmitter.send(JsonObject.mapFrom(request));
             return Uni.createFrom()
                     .item(Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(
                             "Le service category est actuellement indisponible. La category sera créé dès que possible.")

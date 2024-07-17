@@ -1,4 +1,4 @@
-package org.acme.dto.order;
+package org.acme.dto;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.AllArgsConstructor;
@@ -7,11 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @RegisterForReflection
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Data
-public class CreateOrderDto {
+public class CreateOrderMessageDto {
     private Long idUser;
     private String sessionId;
 }

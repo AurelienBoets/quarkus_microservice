@@ -165,6 +165,7 @@ services:
       - GRPC_PORT=${PLATFORM_GRPC_PORT}
       - HTTP_PORT=9003
       - DATABASE_HOST=mongo
+      - RABBIT=rabbit
     networks:
       - project
     build:
@@ -221,6 +222,7 @@ services:
       - HTTP_PORT=9006
       - DATABASE_HOST=mongo
       - CLIENT_PORT=${FRONTEND_PORT}
+      - RABBIT=rabbit
     networks:
       - project
     build:

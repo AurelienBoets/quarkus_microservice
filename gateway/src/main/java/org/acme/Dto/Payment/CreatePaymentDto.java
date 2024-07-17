@@ -1,14 +1,17 @@
 package org.acme.dto.payment;
 
+import java.util.List;
+import org.acme.dto.order.OrderItemDto;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@AllArgsConstructor
-@Data
-@RegisterForReflection
 @NoArgsConstructor
+@Data
+@AllArgsConstructor
+@Builder
+@RegisterForReflection
 public class CreatePaymentDto {
-    private long amount;
+    private double totalAmount;
+    private Long idUser;
+    private List<OrderItemDto> items;
 }
