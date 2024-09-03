@@ -9,7 +9,6 @@ Ce projet est une application de commerce électronique construite en utilisant 
 - [Installation](#installation)
 - [Démarrage](#démarrage)
 - [Microservices](#microservices)
-- [Déploiement](#déploiement)
 
   ## Architecture
 
